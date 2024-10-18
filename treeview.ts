@@ -16,6 +16,15 @@ import { getPlugConfig } from "./config.ts";
  */
 let currentPosition: Position | undefined;
 
+const onMobile = runningOnMobile();
+
+function runningOnMobile() {
+  if (navigator.userAgentData !== undefined) {
+    return navigator.userAgentData.mobile
+  }
+  return navigator.userAgent.match(/Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile/)
+}
+
 /**
  * Toggles the treeview and it's preferred state.
  */
@@ -62,8 +71,9 @@ export async function showTreeIfEnabled() {
  */
 export async function showTree() {
   const config = await getPlugConfig();
+  const position = onMobile ? config.mobilePosition : config.position
 
-  if (currentPosition && config.position !== currentPosition) {
+  if (currentPosition && position !== currentPosition) {
     // This can be caused if the position preference in SETTINGS was changed
     // while the tree was visible. If we don't first hide the page tree,
     // we'll end up with multiple trees visible.
@@ -106,7 +116,7 @@ export async function showTree() {
   };
 
   await editor.showPanel(
-    config.position,
+    position,
     config.size,
     `
       <link rel="stylesheet" href="/.client/main.css" />
@@ -139,5 +149,5 @@ export async function showTree() {
   );
 
   await setTreeViewEnabled(true);
-  currentPosition = config.position;
+  currentPosition = position;
 }

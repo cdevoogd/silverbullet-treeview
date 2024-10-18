@@ -58,6 +58,7 @@ const treeViewConfigSchema = z.object({
    * Where to position the tree view in the UI.
    */
   position: z.enum(POSITIONS).optional().default("lhs"),
+  mobilePosition: z.enum(POSITIONS).optional().default("modal"),
 
   /**
    * The size of the treeview pane.
