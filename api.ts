@@ -89,7 +89,19 @@ treeview:
     }
   }
 
-  pages.sort((a, b) => a.name.localeCompare(b.name));
+  const collator = new Intl.Collator()
+  pages.sort((a, b) => {
+    // List directories before files
+    const aLevels = a.name.split("/").length
+    const bLevels = b.name.split("/").length
+    if (aLevels > bLevels) {
+      return -1
+    } else if (aLevels < bLevels) {
+      return 1
+    }
+
+    return collator.compare(a.name, b.name)
+  });
 
   pages.forEach((page) => {
     page.name.split("/").reduce((parent, title, currentIndex, parts) => {
